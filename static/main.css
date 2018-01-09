@@ -117,10 +117,15 @@
     list-style-type  : none;
     text-align       : center;
   }
+  
   .catname {
     margin-left      : 200px; 
   }
 
+  .itemname {
+    margin-left      : -15px; 
+  }
+  
 /* Responsive styling of fonts */
   h1 {
     font-size: 3.5vw;
