@@ -1,0 +1,61 @@
+<!--CATALOG PROJECT-->
+<!DOCTYPE html>
+<html>
+<!-- Head section - Viewport and stylesheets definitions -->
+<head>
+  <title>Catalog App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js" defer></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" defer></script>
+  <link href="/static/fonts.css" rel="stylesheet">
+  <link href="/static/main.css"  rel="stylesheet">
+</head>
+<!-- Body section -->
+<body>
+  <div class="container main">    
+      <div class="row top-menu">
+          <div class="toplogo col-md-2">
+            <img class="img-responsive" src="/static/sports-logo.jpg">
+          </div>
+          <div class="topmost col-md-10 text-left">       
+        <header class="header">           
+          <h1>Catalog App</h1>          
+        </header>
+        <br>        
+      </div>
+      <div class="row"></div>
+      <div class="topmost col-md-6 text-left padding-left">
+        <a href="{{url_for('showallCategories')}}">
+          <span class="text-center" aria-hidden="true"></span>Show All Categories
+        </a>
+      </div>
+      <div class="topmost col-md-6">
+        <div class="text-right padding-right">
+          {%if 'username' not in session %}
+            <a href="{{url_for('showLogin')}}">Login</a>
+          {% else %}
+            <a href="{{url_for('gdisconnect')}}">Logout</a>
+          {% endif %}   
+        </div>  
+      </div>
+      </div>        
+    </div>
+    <div class="row catname">
+      <div class="col-md-12">
+        <h2>New Item</h2>
+      </div>
+      <form action="{{ url_for('newItem', category_id=category_id)}}" method='post'>
+  	    <p>Name:</p>
+	      <input type="text" size=30 name="name">	
+	      <p>Description:</p>
+	      <input type="text" size=40 name="description">
+        <p>Price:</p>
+        <input type="text" size=40 name="price">
+	      <input type="submit" value="Create">
+        <a href="{{url_for('showCategory', category_id=category_id)}}">Cancel</a>
+      </form>    
+  </div>
+</body>
+</html>

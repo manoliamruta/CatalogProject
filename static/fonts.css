@@ -1,0 +1,7 @@
+/* Stint Ultra Expanded font */
+@font-face {
+  font-family      : "Stint Ultra Expanded";
+  font-style       : normal;
+  font-weight      : 400;
+  src              : url("../css/Stint Ultra Expanded.woff") format("woff");
+}

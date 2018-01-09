@@ -1,0 +1,97 @@
+<!--CATALOG PROJECT-->
+<!DOCTYPE html>
+<html>
+<!-- Head section - Viewport and stylesheets definitions -->
+<head>
+  <title>Catalog App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js" defer></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" defer></script>
+  <link href="/static/fonts.css" rel="stylesheet">
+  <link href="/static/main.css"  rel="stylesheet">
+</head>
+<!-- Body section -->
+<body>
+	<div class="container main">    
+    	<div class="row top-menu">
+    	  	<div class="toplogo col-md-2">
+	        	<img class="img-responsive" src="/static/sports-logo.jpg">
+      		</div>
+      		<div class="topmost col-md-10 text-left">				
+				<header class="header"> 					
+					<h1>Catalog App</h1>					
+				</header>
+				<br>				
+			</div>
+			<div class="row"></div>
+			<div class="topmost col-md-6 text-left padding-left">
+				<a href="{{url_for('showallCategories')}}">
+					<span class="text-center" aria-hidden="true"></span>Show All Categories
+				</a>
+			</div>
+			<div class="topmost col-md-6">
+				<div class="text-right padding-right">
+					{%if 'username' not in session %}
+						<a href="{{url_for('showLogin')}}">Login</a>
+					{% else %}
+						<a href="{{url_for('gdisconnect')}}">Logout</a>
+					{% endif %}		
+				</div>	
+			</div>
+			</div>				
+		</div>
+		<div class="row">
+			<div class="col-md-12 catname">
+				<h2>{{category.name}}</h2>
+			</div>
+		</div>
+		<div class="row padding-top padding-bottom">						
+			<div class="col-md-1 button">
+				<a href="{{url_for('newItem', category_id=category.id) }}">
+					<button class="btn btn-default" id="new-item">
+						<span class="glyphicon" aria-hidden="true"></span>Add Item
+					</button>
+				</a>
+			</div>
+			<div class="col-md-1 button">
+				<a href="{{url_for('showallCategories') }}">
+					<button class="btn btn-default" id="cancel-item">
+						<span class="glyphicon" aria-hidden="true"></span>Cancel
+					</button>
+				</a>
+			</div>						
+		</div>
+		<br>
+		<br>
+		<br>
+		<!--MESSAGE FLASHING EXAMPLE -->
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<ul>
+			{% for message in messages %}
+  				<li><strong>{{message}}</strong></li>
+  			{% endfor %}
+		</ul>
+		{% endif %}
+		{% endwith %}		
+		<div class="row">						
+			<div class="col-md-12">					
+				{% for i in item %}				
+					<div class="col-md-4 category-list catname">	
+       					<h3>{{i.name}}</h3>
+       					<p>{{i.description}}</p>
+       					<p>{{i.price}}</p>
+          				<p>{{i.date}}</p>   
+          				{%if 'username' in session %}       				
+							<a href ='{{ url_for('editItem', category_id=category.id, item_id=i.id) }}'>Edit</a> <br> <br>
+							<a href ='{{ url_for('deleteItem', category_id=category.id, item_id=i.id) }}'>Delete</a>
+						{% endif %}
+       				</div>
+       			{% endfor %}			
+       		</div>			
+		</div>		
+	</div>
+</body>
+</html>

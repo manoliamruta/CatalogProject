@@ -1,0 +1,164 @@
+/* General styling */
+* {
+    box-sizing       : border-box;
+    font-family      : "Stint Ultra Expanded";
+  }
+
+  body {
+    width            : 100%;
+    height           : 100%;
+    background-color : #bfd9bf;
+    font-family      : "Stint Ultra Expanded";
+    margin           : 0px;
+  }
+
+  .header {
+    text-align       : left;
+    color            : #000000;
+    padding          : 1.5em;
+    margin-top       : 0px;
+    width            : 100%;     
+  }
+
+  .category-list {
+    background-color : #bfd9bf;
+    padding          : 20px;
+ }
+ 
+ .category-list:hover {
+    background-color : #cfe2cf;
+    padding          : 20px;
+ }
+ 
+  .bordered{
+    border           : 2px solid #70a970;
+  }  
+  
+  .img-responsive{
+    margin           : 0 auto;
+    height           : 10vw; 
+    float            : right;   
+  }
+  
+  .top-menu {
+    padding-top      : 30px;
+    padding-left     : 0px;
+    padding-bottom   : 30px;
+    background-color : #ffffff;
+  }
+    
+  .topmost {
+    padding-left     : 0px;
+  }
+
+  .padding-top {
+    padding-top      : 30px;
+  }
+
+  .padding-bottom {
+    padding-bottom   : 30px;
+  }
+
+  .padding-right {
+    padding-right    : 100px;
+  }
+
+  .padding-left {
+    padding-left     : 100px;
+  }
+
+  .margin-right {
+    margin-right     : 30px;
+  }
+
+  .padding-none {
+    padding          : 0;
+  }
+  
+  .btn {
+    padding          : 20px;
+    margin           : 0;
+    border-color     : #396039;
+    border-width     : 2px;
+    color            : #396039;
+    font-family      : "Stint Ultra Expanded";
+    font-size        : 1.2vw;
+  }
+  
+  .btn:hover {
+    border-color     : #000000;
+  }
+
+  .latestCategories {
+    float            : right;
+  }
+
+  .toplogo {
+    width            : auto;
+  }
+
+  .main {
+    padding-left     : 0px;
+    padding-right    : 0px;
+    width            : 100%;
+  }
+
+  .button {
+    margin-left      : 200px;
+  }
+
+  .flash {
+    background-color : #98FB98;
+    width            :100%;
+    text-decoration  : none;
+  }
+
+  .flash li {
+    list-style-type  : none;
+    text-align       : center;
+  }
+  .catname {
+    margin-left      : 200px; 
+  }
+
+/* Responsive styling of fonts */
+  h1 {
+    font-size: 3.5vw;
+    font-family: "Stint Ultra Expanded";
+    color: #000000;
+  }
+
+  h2 {
+    font-size: 2.5vw;
+    font-family: "Stint Ultra Expanded";
+    color: #000000;
+  }
+
+  h3 {
+    font-size: 2.0vw;
+    font-family: "Stint Ultra Expanded";
+    color: #000000;
+  }
+
+  h4 {
+    font-size: 1.5vw;
+    font-family: "Stint Ultra Expanded";
+    color: #000000;
+  }
+
+  h5 {
+    font-size: 1.3vw;
+    font-family: "Stint Ultra Expanded";
+    color: #000000;
+  }
+
+  a {
+    font-size: 1.2vw;
+    font-family: "Stint Ultra Expanded";
+    color: #000000;
+  }
+  p {
+    font-size: 1.3vw;
+    font-family: "Stint Ultra Expanded";
+    color: #000000;
+  }
