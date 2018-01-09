@@ -66,7 +66,7 @@ def showallCategories():
     category = session.query(Category).all()
     onedayearly = datetime.timedelta(hours=24)
     since = datetime.datetime.now() - onedayearly
-    latest = session.query(Category).filter(Category.date > since)
+    latest = session.query(Item).filter(Item.date > since)
     return render_template('category.html', category=category, latest=latest)
 
 
