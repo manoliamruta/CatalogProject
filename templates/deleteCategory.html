@@ -43,9 +43,10 @@
 			</div>				
 		</div>
 		<div class="row catname">
-        	<div class="col-md-12">  
+        	<div class="col-md-12 itemname">  
 				<h2> Are you sure you want to delete {{category.name}}? </h2>
 			</div>
+			<br>
 			<form action="{{ url_for('deleteCategory', category_id=category_id)}}" method = 'post'>
 				<input type='submit', value = 'Delete'>
 				<a href = "{{ url_for('showallCategories', category_id = category_id)}}"> Cancel </a>
