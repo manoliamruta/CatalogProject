@@ -6,8 +6,14 @@ import json
 import requests
 import datetime
 
-from flask import Flask, render_template, url_for, \
-    request, redirect, flash, jsonify
+from flask import (Flask,
+                   render_template,
+                   url_for,
+                   request,
+                   redirect,
+                   flash,
+                   jsonify)
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Category, Base, Item, User
@@ -15,7 +21,7 @@ from flask import session as login_session
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 from flask import make_response
-
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -28,6 +34,15 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect('/login')
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/catalog/<int:category_id>/JSON')
@@ -72,7 +87,7 @@ def showallCategories():
 
 @app.route('/catalog/<int:category_id>/')
 @app.route('/catalog/<int:category_id>/item/')
-def showCategory(category_id, methods=['GET', 'POST']):
+def showCategory(category_id):
     """ This function shows the particular category whose
     id is given. """
     category = session.query(Category).\
@@ -83,13 +98,13 @@ def showCategory(category_id, methods=['GET', 'POST']):
 
 
 @app.route('/catalog/new/', methods=['GET', 'POST'])
+@login_required
 def newCategory():
     """ This function add's new category. """
-    if 'username' not in login_session:
-        return redirect('/login')
     if request.method == 'POST':
         new_Category = Category(name=request.form['name'],
-                                image=request.form['image'])
+                                image=request.form['image'],
+                                user_id=login_session['user_id'])
         session.add(new_Category)
         session.commit()
         flash('New Category created')
@@ -99,17 +114,23 @@ def newCategory():
 
 
 @app.route('/catalog/<int:category_id>/item/new/', methods=['GET', 'POST'])
+@login_required
 def newItem(category_id):
     """ This function add's new item to a particular Category,
     mentioned by the category id. """
-    if 'username' not in login_session:
-        return redirect('/login')
+    editedCategory = session.query(Category). \
+        filter_by(id=category_id).one()
+    if editedCategory.user_id != login_session['user_id']:
+        flash('You are not authorized to edit this Category.\
+            Please create your own Category in order to edit.')
+        return redirect(url_for('showCategory', category_id=category_id))
     if request.method == 'POST':
         newItem = Item(
             name=request.form['name'],
             description=request.form['description'],
             price=request.form['price'],
-            category_id=category_id)
+            category_id=category_id,
+            user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
         flash('New Item created')
@@ -121,13 +142,16 @@ def newItem(category_id):
 
 @app.route('/catalog/<int:category_id>/edit/',
            methods=['GET', 'POST'])
+@login_required
 def editCategory(category_id):
     """ This function edit's a particular Category,
     mentioned by the category id. """
-    if 'username' not in login_session:
-        return redirect('/login')
     editedCategory = session.query(Category). \
         filter_by(id=category_id).one()
+    if editedCategory.user_id != login_session['user_id']:
+        flash('You are not authorized to edit this Category.\
+            Please create your own Category in order to edit.')
+        return redirect(url_for('showallCategories'))
     if request.method == 'POST':
         if request.form['name']:
             editedCategory.name = request.form['name']
@@ -145,12 +169,15 @@ def editCategory(category_id):
 
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/edit/',
            methods=['GET', 'POST'])
+@login_required
 def editItem(category_id, item_id):
     """ This function edit's a particular item specified by
     the item id and category id. """
-    if 'username' not in login_session:
-        return redirect('/login')
     editedItem = session.query(Item).filter_by(id=item_id).one()
+    if editedItem.user_id != login_session['user_id']:
+        flash('You are not authorized to edit this Item.\
+            Please create own Item in order to edit.')
+        return redirect(url_for('showallCategories'))
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -169,40 +196,49 @@ def editItem(category_id, item_id):
 
 
 @app.route('/catalog/<int:category_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteCategory(category_id):
     """ This function delete's a particular Category
     specified by the category id. """
-    if 'username' not in login_session:
-        return redirect('/login')
     editedCategory = session.query(Category).\
         filter_by(id=category_id).one()
     editedItem = session.query(Item).\
         filter_by(category_id=editedCategory.id).all()
     print editedItem
-    if editedItem:
-        flash('Category Deletion not possible. \
-            Please delete the items in Category')
-        return redirect(url_for('showCategory', category_id=category_id))
+    if editedCategory.user_id != login_session['user_id']:
+        flash('You are not authorized to delete this Item.\
+            Please create own Category with items in order to \
+            delete items.')
+        return redirect(url_for('showallCategories'))
     else:
-        if request.method == 'POST':
-            session.delete(editedCategory)
-            session.commit()
-            flash('Category Deletion successfull')
-            return redirect(url_for('showallCategories'))
+        if editedItem:
+            flash('Category Deletion not possible. \
+                Please delete the items in Category')
+            return redirect(url_for('showCategory',
+                                    category_id=category_id))
+        elif request.method == 'POST':
+                session.delete(editedCategory)
+                session.commit()
+                flash('Category Deletion successfull')
+                return redirect(url_for('showallCategories'))
         else:
-            return render_template(
-                'deleteCategory.html', category_id=category_id,
-                category=editedCategory)
+                return render_template(
+                    'deleteCategory.html', category_id=category_id,
+                    category=editedCategory)
 
 
 @app.route('/catalog/<int:category_id>/item/<int:item_id>/delete/',
            methods=['GET', 'POST'])
+@login_required
 def deleteItem(category_id, item_id):
     """ This function delete's a particular Item specified by the
     item id and category id. """
-    if 'username' not in login_session:
-        return redirect('/login')
     editedItem = session.query(Item).filter_by(id=item_id).one()
+    if editedItem.user_id != login_session['user_id']:
+        flash('You are not authorized to delete this Item.\
+            Please create own Category with items in order to \
+            delete items.')
+        return redirect(url_for('showallCategories'))
     if request.method == 'POST':
         session.delete(editedItem)
         session.commit()
@@ -307,6 +343,7 @@ def gconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
